@@ -3,6 +3,12 @@ module.exports = {
   content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        footer: "repeat(6, minmax(0, 1fr))",
+      },
+      gridTemplateRows: {
+        footer: "repeat(2, minmax(0, 1fr))",
+      },
       animation: {
         scroll: "scroll 25s linear infinite",
       },
