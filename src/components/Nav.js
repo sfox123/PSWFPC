@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import {
   FaFacebookF,
   FaInstagram,
@@ -11,6 +13,7 @@ import logo from "../assets/logo.png";
 import CarousalReact from "./carousal/Carousel";
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <nav className="flex flex-col">
@@ -92,7 +95,7 @@ const Nav = () => {
           </div>
         </div>
       )}
-      <CarousalReact />
+      {location.pathname === "/" && <CarousalReact />}
     </nav>
   );
 };

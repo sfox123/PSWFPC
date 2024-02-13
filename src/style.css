@@ -9,8 +9,9 @@
   box-sizing: border-box;
 }
 body{
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; */
     background-color: #f4f4f4;
+    font-family: "Poppins", sans-serif;
 }
 
 @layer utilities{
@@ -30,6 +31,9 @@ body{
     font-family: 'Inter', sans-serif;
       font-family: 'Playfair Display', serif;
   }
+    .animate-twinkle {
+      animation: twinkle 2s infinite;
+    }
 }
 
 @layer components {
@@ -48,3 +52,18 @@ body{
     transform: translateX(-50%);
   }
 }
+
+@keyframes twinkle {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
