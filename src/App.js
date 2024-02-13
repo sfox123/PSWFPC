@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useGetPostsQuery } from "./redux";
 
 import Footer from "./components/Footer/Footer";
 import Main from "./components/Main";
@@ -6,6 +8,7 @@ import Nav from "./components/Nav";
 import Project from "./components/Project";
 import NotFound from "./components/NotFound";
 import "./style.css";
+import { useEffect } from "react";
 
 function Layout({ children }) {
   return (
@@ -18,6 +21,15 @@ function Layout({ children }) {
 }
 
 export default function App() {
+  const blog = useSelector((state) => state.post);
+  const { data, error, isLoading } = useGetPostsQuery();
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -25,7 +37,7 @@ export default function App() {
           path="/"
           element={
             <Layout>
-              <Main />
+              <Main blogs={blog} />
             </Layout>
           }
         />

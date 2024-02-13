@@ -20,7 +20,7 @@ function BlogCard({ img, title, subtitle }) {
   );
 }
 
-export default function Main() {
+export default function Main({ blogs }) {
   return (
     <div>
       <Top />
@@ -33,7 +33,7 @@ export default function Main() {
         dots={false}
         autoplay={true}
       >
-        {blogArray.map((blog) => (
+        {blogs.map((blog) => (
           <BlogCard
             key={blog.id}
             img={blog.img}
