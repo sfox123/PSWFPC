@@ -22,6 +22,7 @@ function Layout({ children }) {
 
 export default function App() {
   const blog = useSelector((state) => state.post);
+  const activePost = useSelector((state) => state.activePost);
   const { data, error, isLoading } = useGetPostsQuery();
 
   useEffect(() => {
@@ -42,10 +43,18 @@ export default function App() {
           }
         />
         <Route
-          path="/project"
+          path="/project/:id"
           element={
             <Layout>
               <Project />
+            </Layout>
+          }
+        />
+        <Route
+          path="/post"
+          element={
+            <Layout>
+              <div>Post</div>
             </Layout>
           }
         />

@@ -1,4 +1,3 @@
-import footage from "../../assets/footage.mp4";
 function Top() {
   return (
     <main className="flex flex-row justify-between">
@@ -13,7 +12,9 @@ function Top() {
           loop
           muted
           className="clip-box object-cover w-1/2 h-3/4"
-          src={footage}
+          src={
+            "https://drive.google.com/file/d/1Jb8wPqU97R84NaY1Jrt2GJ3YEE1Y7Cin/view?usp=sharing"
+          }
         ></video>
       </div>
       <div className="capitalize text-2xl font-weight p-4 font-playfair">

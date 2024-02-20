@@ -11,15 +11,22 @@ export default function Footer() {
       <div className="sm:self-center xl:row-start-2 xl:col-start-1 xl:col-end-2 sm:row-start-2 sm:row-end-3 sm:col-start-5 sm:col-end-6">
         <img src={wfp} className="w-full h-2/4" alt="wfp-white" />
       </div>
-      {[...Array(4)].map((_, i) => (
-        <div key={i} className="flex flex-col justify-around align-middle">
-          <h1 className="mb-4">link {i + 1}</h1>
-          <h4 className="font-slim">link 1</h4>
-          <h4 className="font-slim">link 2</h4>
-          <h4 className="font-slim">link 3</h4>
-          <h4 className="font-slim">link 4</h4>
-        </div>
-      ))}
+      <div className="flex flex-col justify-around align-middle">
+        <h1 className="mb-4">link</h1>
+        <h4 className="mb-2">sublink</h4>
+      </div>
+      <div className="flex flex-col justify-around align-middle">
+        <h1 className="mb-4">link</h1>
+        <h4 className="mb-2">sublink</h4>
+      </div>
+      <div className="flex flex-col justify-around align-middle">
+        <h1 className="mb-4">link</h1>
+        <h4 className="mb-2">sublink</h4>
+      </div>
+      <div className="flex flex-col justify-around align-middle">
+        <h1 className="mb-4">link</h1>
+        <h4 className="mb-2">sublink</h4>
+      </div>
       <div className="flex">
         <h4 className="mb-4 self-end text-[12px] font-semibold">
           ©️ All rights reserved 2024. PSWFPC

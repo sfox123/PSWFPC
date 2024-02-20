@@ -3,6 +3,7 @@ import { blogArray } from "../../api/constant";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import { Link } from "react-router-dom";
 
 function BlogCard({ img, title, subtitle, id }) {
   return (
@@ -12,9 +13,12 @@ function BlogCard({ img, title, subtitle, id }) {
         <div className="slider-heading flex flex-col justify-center items-center z-10 w-full h-full text-center">
           <h1 className="mb-4 text-6xl justify-center ">{title}</h1>
           <h4 className="mb-8 text-5xl">{subtitle}</h4>
-          <button className="px-4 py-2 clip-button w-[30%] bg-white text-black">
+          <Link
+            to={`/project/${id}`}
+            className="px-4 py-2 clip-button w-[30%] bg-white text-black"
+          >
             Click Me
-          </button>
+          </Link>
         </div>
       </div>
     </div>

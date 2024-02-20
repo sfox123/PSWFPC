@@ -1,15 +1,13 @@
 import React from "react";
+import { blogArray } from "../api/constant";
+import { useParams } from "react-router-dom";
 
-export default function Project({
-  img,
-  title,
-  subtitle,
-  link,
-  tech,
-  date,
-  role,
-  desc,
-}) {
+export default function Project() {
+  const { id } = useParams();
+  let activePost = blogArray.find((blog) => blog.id === Number(id));
+  activePost = activePost ? activePost : {};
+  const { img, title, subtitle, dictionary } = activePost;
+
   return (
     <div>
       <section className="p-4">
@@ -18,13 +16,22 @@ export default function Project({
       <section className="p-4">
         <h1 className="text-4xl font-bold mb-4">{title}</h1>
         <p className="text-lg mb-4">{subtitle}</p>
-        <a href={link} className="text-primary mb-4">
-          {link}
-        </a>
-        <p className="text-lg mb-4">{tech}</p>
-        <p className="text-lg mb-4">{date}</p>
-        <p className="text-lg mb-4">{role}</p>
-        <p className="text-lg mb-4">{desc}</p>
+        {dictionary &&
+          dictionary.keyValue &&
+          Object.values(dictionary.keyValue).map((value, index) => (
+            <div key={index}>
+              <h4>{value[0]}</h4>
+              <p>{value[1]}</p>
+            </div>
+          ))}
+        {dictionary && dictionary.para && (
+          <p className="text-lg mb-4">{dictionary.para}</p>
+        )}
+        {dictionary &&
+          dictionary.image &&
+          Object.values(dictionary.image).map((imgUrl, index) => (
+            <img key={index} src={imgUrl} alt={`img-${index}`} />
+          ))}
       </section>
     </div>
   );
