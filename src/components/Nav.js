@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   FaFacebookF,
@@ -53,7 +53,7 @@ const Nav = () => {
             }`}
           >
             <li>
-              <a href="#">Home</a>
+              <Link to="/">Home</Link>
             </li>
             <li>
               <a href="#">About</a>

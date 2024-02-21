@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "../../assets/logow.png";
 import wfp from "../../assets/wfp.png";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -23,9 +24,10 @@ export default function Footer() {
         <h1 className="mb-4">link</h1>
         <h4 className="mb-2">sublink</h4>
       </div>
-      <div className="flex flex-col justify-around align-middle">
-        <h1 className="mb-4">link</h1>
-        <h4 className="mb-2">sublink</h4>
+      <div className="flex flex-col capitalize justify-around align-middle">
+        <h1 className="mb-4">
+          <Link to="/login">admin</Link>
+        </h1>
       </div>
       <div className="flex">
         <h4 className="mb-4 self-end text-[12px] font-semibold">

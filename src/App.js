@@ -9,6 +9,8 @@ import Project from "./components/Project";
 import NotFound from "./components/NotFound";
 import "./style.css";
 import { useEffect } from "react";
+import Admin from "./components/Admin/Admin";
+import Login from "./components/Admin/Login";
 
 function Layout({ children }) {
   return (
@@ -50,6 +52,7 @@ export default function App() {
             </Layout>
           }
         />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/post"
           element={
