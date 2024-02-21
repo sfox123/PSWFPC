@@ -2,12 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { postApi } from "./api";
 import { postReducer, addPost, removePost } from "./slice/postSlice";
-import { activePostReducer, setActivePost } from "./slice/activePost";
+import { setIsAdmin, isAdminReducer } from "./slice/activePost";
 
 export const store = configureStore({
   reducer: {
     post: postReducer,
-    activePost: activePostReducer,
+    isAdmin: isAdminReducer,
     [postApi.reducerPath]: postApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -21,4 +21,4 @@ export {
   useAddPostMutation,
   useRemovePostMutation,
 } from "./api";
-export { addPost, removePost, setActivePost };
+export { addPost, removePost, setIsAdmin };

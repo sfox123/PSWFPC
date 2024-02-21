@@ -23,7 +23,7 @@ const firebaseConfig = {
   storageBucket: "pswfpc-a086d.appspot.com",
   messagingSenderId: "304737532037",
   appId: "1:304737532037:web:061fbb509f5fda482891ec",
-  measurementId: "G-4LYLLK6X33"
+  measurementId: "G-4LYLLK6X33",
 };
 
 function Layout({ children }) {
@@ -38,6 +38,8 @@ function Layout({ children }) {
 
 export default function App() {
   const blog = useSelector((state) => state.post);
+  const isAdmin = useSelector((state) => state.isAdmin);
+
   const { data, error, isLoading } = useGetPostsQuery();
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export default function App() {
             </Layout>
           }
         />
+        <Route path="/admin" element={isAdmin ? <Admin /> : <Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

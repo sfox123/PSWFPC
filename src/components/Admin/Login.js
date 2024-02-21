@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setIsAdmin } from "../../redux";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -8,6 +10,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -21,6 +25,7 @@ export default function Login() {
     try {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, username, password);
+      dispatch(setIsAdmin(true));
       navigate("/admin");
     } catch (error) {
       // Handle error
@@ -73,7 +78,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <span
-                className=" cursor-pointer"
+                className=" cursor-pointer mt-5 mb-5"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? "Hide password" : "Show password"}
@@ -91,7 +96,6 @@ export default function Login() {
             >
               {isLoading ? (
                 <span className="inline-flex items-center ml-2">
-                  Loading...
                   <svg
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"

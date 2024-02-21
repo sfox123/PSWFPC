@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const activePostSlice = createSlice({
-  name: "activePost",
-  initialState: null,
+const isAdmin = createSlice({
+  name: "isAdmin",
+  initialState: false,
   reducers: {
-    setActivePost: (state, action) => {
+    setIsAdmin: (state, action) => {
       return action.payload;
     },
   },
 });
 
-export const { setActivePost } = activePostSlice.actions;
-export const activePostReducer = activePostSlice.reducer;
+export const { setIsAdmin } = isAdmin.actions;
+export const isAdminReducer = isAdmin.reducer;

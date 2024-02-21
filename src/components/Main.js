@@ -3,18 +3,18 @@ import Top from "./Main/Top";
 import Heading from "./Heading/Heading";
 import Bottom from "./Main/Bottom";
 
-import { useDispatch } from "react-redux";
-import { setActivePost } from "../redux";
-
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import { useNavigate } from "react-router";
 
 function BlogCard({ img, title, subtitle, id }) {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleActivePost = (id) => {
-    dispatch(setActivePost(id));
+    navigate(`/project/${id}`);
   };
+
   return (
     <div className="item relative">
       <img className="" src={img} alt={title} />
