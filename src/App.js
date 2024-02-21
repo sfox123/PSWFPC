@@ -12,6 +12,20 @@ import { useEffect } from "react";
 import Admin from "./components/Admin/Admin";
 import Login from "./components/Admin/Login";
 
+import { getAuth } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPzZ_3RT0K1R9sdPI51y2ygV5QE7THMrU",
+  authDomain: "pswfpc-a086d.firebaseapp.com",
+  projectId: "pswfpc-a086d",
+  storageBucket: "pswfpc-a086d.appspot.com",
+  messagingSenderId: "304737532037",
+  appId: "1:304737532037:web:061fbb509f5fda482891ec",
+  measurementId: "G-4LYLLK6X33"
+};
+
 function Layout({ children }) {
   return (
     <div>
@@ -24,8 +38,13 @@ function Layout({ children }) {
 
 export default function App() {
   const blog = useSelector((state) => state.post);
-  const activePost = useSelector((state) => state.activePost);
   const { data, error, isLoading } = useGetPostsQuery();
+
+  useEffect(() => {
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+  }, []);
 
   useEffect(() => {
     if (data) {

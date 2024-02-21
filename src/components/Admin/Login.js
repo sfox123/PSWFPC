@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import axios from "axios";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -16,15 +16,12 @@ export default function Login() {
     event.preventDefault();
 
     try {
-      //   const response = await axios.post("/login", { username, password });
-      const response = { status: 200 };
-      if (response.status === 200) {
-        navigate("/admin");
-      } else {
-        // handle error
-      }
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, username, password);
+      navigate("/admin");
     } catch (error) {
-      // handle error
+      // Handle error
+      console.error(error.message);
     }
   };
 
