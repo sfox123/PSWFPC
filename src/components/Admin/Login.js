@@ -6,7 +6,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +17,7 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true); // Start loading state
-
+    setError("");
     try {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, username, password);
@@ -25,6 +25,8 @@ export default function Login() {
     } catch (error) {
       // Handle error
       console.error(error.message);
+      setError("Password error, try again."); // Set the error message
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -78,7 +80,8 @@ export default function Login() {
               </span>
             </div>
           </div>
-
+          {error && <p className="text-red-500">{error}</p>}{" "}
+          {/* Display the error message */}
           <div>
             <button
               type="submit"
@@ -87,7 +90,7 @@ export default function Login() {
               disabled={isLoading}
             >
               {isLoading ? (
-                <span className="inline-flex items-center">
+                <span className="inline-flex items-center ml-2">
                   Loading...
                   <svg
                     className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
