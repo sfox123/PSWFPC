@@ -52,6 +52,7 @@ export default function App() {
             </Layout>
           }
         />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/post"
