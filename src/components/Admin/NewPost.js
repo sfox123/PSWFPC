@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaPlus, FaMinus, FaFileUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import AdminHeader from "./AdminHeader";
 
 const NewPost = () => {
@@ -72,23 +73,45 @@ const NewPost = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Implement your form submission logic here
-    // For example, you could send the data to your backend API using
-    // a library like Axios or Fetch.
+    try {
+      const formData = new FormData();
+      formData.append("id", "4");
+      formData.append("title", title);
+      formData.append("img", "imag");
+      formData.append("subtitle", subTitle);
+      formData.append("paragraph", paragraph);
 
-    // const response = await axios.post('/submit-data', {
-    //   title,
-    //   subTitle,
-    //   paragraphs,
-    //   keyValuePairs,
-    //   images: images.map((file) => file.name), // Assuming you have file names stored
-    //   bulkImages,
-    // });
+      // images.forEach((image, index) => {
+      //   formData.append(`image${index + 1}`, image);
+      // });
 
-    // Handle the response, e.g., navigate to the success page:
+      // bulkImages.forEach((image, index) => {
+      //   formData.append(`bulkImage${index + 1}`, image);
+      // });
 
-    // navigate('/');
+      // keyValuePairs.forEach(({ key, value }, index) => {
+      //   formData.append(`keyValuePairs[${index}].key`, key);
+      //   formData.append(`keyValuePairs[${index}].value`, value);
+      // });
+
+      const response = await axios.post(
+        "https://us-central1-pswfpc-a086d.cloudfunctions.net/addBlog",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Blog post added successfully:", response.data);
+      // Redirect or show success message
+    } catch (error) {
+      console.error("Error adding blog post:", error);
+      // Handle error, show error message
+    }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -247,6 +270,14 @@ const NewPost = () => {
               Upload
             </button>
           </div>
+          <div className="mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
+          >
+            Submit
+          </button>
+        </div>
         </form>
       </main>
     </div>
