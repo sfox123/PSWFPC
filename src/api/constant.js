@@ -9,11 +9,11 @@ export const blogArray = [
     img: slider1,
     subtitle: "subtitle 1",
     dictionary: {
-      keyValue: {
-        0: ["key1", "value1"],
-        1: ["key2", "value2"],
-        2: ["key3", "value3"],
-      },
+      keyValue: [
+        ["key1", "value1"],
+        ["key2", "value2"],
+        ["key3", "value3"],
+      ],
       para: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio facilis dicta nisi qui magnam esse nihil iusto a quasi perspiciatis!",
       image: {
         0: "imgUrl",
@@ -28,11 +28,11 @@ export const blogArray = [
     img: slider2,
     subtitle: "subtitle 2",
     dictionary: {
-      keyValue: {
-        0: ["key1", "value1"],
-        1: ["key2", "value2"],
-        2: ["key3", "value3"],
-      },
+      keyValue: [
+        ["key1", "value1"],
+        ["key2", "value2"],
+        ["key3", "value3"],
+      ],
       para: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio facilis dicta nisi qui magnam esse nihil iusto a quasi perspiciatis!",
       image: {
         0: "imgUrl",
@@ -47,11 +47,11 @@ export const blogArray = [
     img: slider3,
     subtitle: "subtitle 3",
     dictionary: {
-      keyValue: {
-        0: ["key1", "value1"],
-        1: ["key2", "value2"],
-        2: ["key3", "value3"],
-      },
+      keyValue: [
+        ["key1", "value1"],
+        ["key2", "value2"],
+        ["key3", "value3"],
+      ],
       para: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Distinctio facilis dicta nisi qui magnam esse nihil iusto a quasi perspiciatis!",
       image: {
         0: "imgUrl",

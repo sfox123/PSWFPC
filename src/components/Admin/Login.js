@@ -26,7 +26,7 @@ export default function Login() {
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, username, password);
       dispatch(setIsAdmin(true));
-      navigate("/admin");
+      navigate("/admin/panel");
     } catch (error) {
       // Handle error
       console.error(error.message);
