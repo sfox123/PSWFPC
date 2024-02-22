@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import CarousalReact from "./carousal/Carousel";
+
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -45,7 +46,9 @@ const Nav = () => {
         </section>
       </section>
       <section className="flex flex-row items-center justify-around">
-        <img src={logo} width={250} height={100} alt="WFP" />
+        <Link to="/">
+          <img src={logo} width={250} height={100} alt="WFP" />
+        </Link>
         {!isOpen && (
           <ul
             className={`flex flex-row justify-around w-1/3 md:flex ${
@@ -56,10 +59,10 @@ const Nav = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <a href="#">About</a>
+              <a href="#">Blogs</a>
             </li>
             <li>
-              <a href="#">Services</a>
+              <a href="#">Useful Links</a>
             </li>
             <li>
               <a href="#">Contact</a>

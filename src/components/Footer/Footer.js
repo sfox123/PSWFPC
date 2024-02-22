@@ -1,6 +1,10 @@
 import React from "react";
 import logo from "../../assets/logow.png";
 import wfp from "../../assets/wfp.png";
+import csp from "../../assets/csp.pdf";
+import nsmp from "../../assets/nsmp.pdf";
+import nsc from "../../assets/nsc.pdf";
+
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -13,16 +17,22 @@ export default function Footer() {
         <img src={wfp} className="w-full h-2/4" alt="wfp-white" />
       </div>
       <div className="flex flex-col justify-around align-middle">
-        <h1 className="mb-4">link</h1>
-        <h4 className="mb-2">sublink</h4>
+        <h1 className="mb-4">NSC</h1>
+        <a href={nsc} target="_blank" className="mb-2">
+          PSWFPC 04.04.2023
+        </a>
       </div>
       <div className="flex flex-col justify-around align-middle">
-        <h1 className="mb-4">link</h1>
-        <h4 className="mb-2">sublink</h4>
+        <h1 className="mb-4">Projects</h1>
+        <a href={nsmp} target="_blank" className="mb-2">
+          NSMP
+        </a>
       </div>
       <div className="flex flex-col justify-around align-middle">
-        <h1 className="mb-4">link</h1>
-        <h4 className="mb-2">sublink</h4>
+        <h1 className="mb-4">Country Strategic Plan</h1>
+        <a target="_blank" href={csp} className="mb-2">
+          CSP 2023 - 2027
+        </a>
       </div>
       <div className="flex flex-col capitalize justify-around align-middle">
         <h1 className="mb-4">

@@ -10,18 +10,19 @@ export default function Project() {
 
   return (
     <div>
-      <section className="p-4">
-        <img src={img} className="object-fit" alt="Wall_Image" />
+      <section className="p-4 flex items-center justify-center">
+        <img src={img} className="h-1/2 w-1/2 object-fit" alt="Wall_Image" />
       </section>
       <section className="p-4">
         <h1 className="text-4xl font-bold mb-4">{title}</h1>
-        <p className="text-lg mb-4">{subtitle}</p>
+        <h2 className="text-lg font-bold mb-4">{subtitle}</h2>
         {dictionary &&
           dictionary.keyValue &&
           Object.values(dictionary.keyValue).map((value, index) => (
-            <div key={index}>
-              <h4>{value[0]}</h4>
-              <p>{value[1]}</p>
+            <div key={index} className="flex flex-row">
+              <h4 className="text-base font-bold mr-4">{value[0]}</h4>
+              <span>-</span>
+              <p className="text-base ml-4">{value[1]}</p>
             </div>
           ))}
         {dictionary && dictionary.para && (
