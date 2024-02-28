@@ -13,11 +13,11 @@ import Login from "./components/Admin/Login";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getStorage } from "firebase/storage";
 import { setIsAdmin } from "./redux";
 
 import "./style.css";
-import AdminPanel from "./components/Admin/Admin";
+
 import NewPost from "./components/Admin/NewPost";
 
 const firebaseConfig = {
@@ -42,12 +42,14 @@ function Layout({ children }) {
 
 export default function App() {
   const [authChecked, setAuthChecked] = useState(false);
-
   const blog = useSelector((state) => state.post);
 
+  const fapp = initializeApp(firebaseConfig);
+  const storage = getStorage(fapp);
   const dispatch = useDispatch();
   useEffect(() => {
     const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       dispatch(setIsAdmin(!!user));
@@ -56,10 +58,6 @@ export default function App() {
 
     return unsubscribe; // Clean up the listener when the component unmounts
   }, []);
-
-  if (!authChecked) {
-    return <div>Loading authentication...</div>;
-  }
 
   function RequireAuth({ children }) {
     const isAdmin = useSelector((state) => state.isAdmin);
@@ -104,7 +102,7 @@ export default function App() {
             path="/admin/panel"
             element={
               <RequireAuth>
-                <Admin />
+                <Admin imgeDB={storage} />
               </RequireAuth>
             }
           />
@@ -112,7 +110,7 @@ export default function App() {
             path="/admin/blog/new"
             element={
               <RequireAuth>
-                <NewPost />
+                <NewPost imgeDB={storage} />
               </RequireAuth>
             }
           />

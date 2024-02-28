@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FaPlus, FaMinus, FaFileUpload } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaPlus, FaMinus } from "react-icons/fa";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import axios from "axios";
+import { v4 } from "uuid";
+
 import AdminHeader from "./AdminHeader";
 
-const NewPost = () => {
+const NewPost = ({ imgDB }) => {
   const [title, setTitle] = useState("");
   const [subTitle, setSubTitle] = useState("");
   const [paragraph, setParagraph] = useState("");
@@ -89,10 +91,10 @@ const NewPost = () => {
       //   formData.append(`bulkImage${index + 1}`, image);
       // });
 
-      // keyValuePairs.forEach(({ key, value }, index) => {
-      //   formData.append(`keyValuePairs[${index}].key`, key);
-      //   formData.append(`keyValuePairs[${index}].value`, value);
-      // });
+      keyValuePairs.forEach(({ key, value }, index) => {
+        formData.append(`keyValuePairs[${index}].key`, key);
+        formData.append(`keyValuePairs[${index}].value`, value);
+      });
 
       const response = await axios.post(
         "https://us-central1-pswfpc-a086d.cloudfunctions.net/addBlog",
@@ -104,14 +106,23 @@ const NewPost = () => {
         }
       );
 
+      const imageUploadPromises = images.map((image) => {
+        const imageRef = ref(imgDB, `images/${v4()}`);
+        uploadBytes(imageRef, image).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            console.log("Uploaded image URL:", url);
+          });
+        });
+      });
+
       console.log("Blog post added successfully:", response.data);
+      console.log(imageUploadPromises);
       // Redirect or show success message
     } catch (error) {
       console.error("Error adding blog post:", error);
       // Handle error, show error message
     }
   };
-
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -254,7 +265,7 @@ const NewPost = () => {
                       onClick={() => handleBulkImageRemove(index)}
                       className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
                     >
-                      X
+                      x
                     </button>
                   </div>
                 ))}
@@ -262,22 +273,15 @@ const NewPost = () => {
             )}
           </fieldset>
 
+          <div className="mt-4"></div>
           <div className="mt-4">
             <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
             >
-              Upload
+              Submit
             </button>
           </div>
-          <div className="mt-4">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
-          >
-            Submit
-          </button>
-        </div>
         </form>
       </main>
     </div>
