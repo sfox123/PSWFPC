@@ -14,6 +14,17 @@ const NewPost = ({ imgDB }) => {
   const [keyValuePairs, setKeyValuePairs] = useState([{ key: "", value: "" }]);
   const [images, setImages] = useState([]);
   const [bulkImages, setBulkImages] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const resetFunc = () => {
+    setTitle("");
+    setSubTitle("");
+    setParagraph("");
+    setKeyValuePairs([{ key: "", value: "" }]);
+    setImages([]);
+    setBulkImages([]);
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
@@ -74,7 +85,7 @@ const NewPost = ({ imgDB }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const formData = {};
       formData.id = v4();
@@ -122,6 +133,9 @@ const NewPost = ({ imgDB }) => {
           },
         }
       );
+      setLoading(false);
+      resetFunc();
+      setSuccessMessage("Blog post added successfully!");
     } catch (error) {
       console.error("Error adding blog post:", error);
       // Handle error, show error message
@@ -134,7 +148,17 @@ const NewPost = ({ imgDB }) => {
         {/* Centering */}
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-6">
           {/* Center the form within the container */}
-
+          {successMessage && (
+            <div
+              className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
+              {successMessage}
+              <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <button onClick={() => setSuccessMessage("")}>&times;</button>
+              </span>
+            </div>
+          )}
           <div className="space-y-2">
             <label htmlFor="title" className="block text-gray-700">
               Title
@@ -142,6 +166,7 @@ const NewPost = ({ imgDB }) => {
             <input
               type="text"
               id="title"
+              disabled={loading}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
@@ -155,6 +180,7 @@ const NewPost = ({ imgDB }) => {
             <input
               type="text"
               id="subTitle"
+              disabled={loading}
               value={subTitle}
               onChange={(e) => setSubTitle(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
@@ -181,6 +207,7 @@ const NewPost = ({ imgDB }) => {
                     />
                     <button
                       type="button"
+                      disabled={loading}
                       onClick={() => handleImageRemove(index)}
                       className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
                     >
@@ -204,6 +231,7 @@ const NewPost = ({ imgDB }) => {
                   name="key"
                   value={pair.key}
                   placeholder="Key"
+                  disabled={loading}
                   onChange={(e) => handleKeyValueChange(index, e)}
                   className="flex-grow p-2 border border-gray-300 rounded"
                 />
@@ -212,6 +240,7 @@ const NewPost = ({ imgDB }) => {
                   name="value"
                   value={pair.value}
                   placeholder="Value"
+                  disabled={loading}
                   onChange={(e) => handleKeyValueChange(index, e)}
                   className="flex-grow p-2 border border-gray-300 rounded"
                 />
@@ -222,6 +251,7 @@ const NewPost = ({ imgDB }) => {
                   {keyValuePairs.length > 1 && (
                     <button
                       type="button"
+                      disabled={loading}
                       onClick={() => handleRemoveKeyValuePair(index)}
                     >
                       <FaMinus className="text-red-500" />
@@ -237,6 +267,7 @@ const NewPost = ({ imgDB }) => {
             <legend className="text-gray-700 font-medium">Paragraph</legend>
             <textarea
               value={paragraph}
+              disabled={loading}
               onChange={(e) => setParagraph(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded"
             />
@@ -266,6 +297,7 @@ const NewPost = ({ imgDB }) => {
                     <button
                       type="button"
                       onClick={() => handleBulkImageRemove(index)}
+                      disabled={loading}
                       className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
                     >
                       x
@@ -280,9 +312,35 @@ const NewPost = ({ imgDB }) => {
           <div className="mt-4">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Submit
+              {loading ? (
+                <span className="inline-flex items-center ml-2">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </span>
+              ) : (
+                "Submit"
+              )}
             </button>
           </div>
         </form>
