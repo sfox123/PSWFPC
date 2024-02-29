@@ -12,12 +12,13 @@ import Admin from "./components/Admin/Admin";
 import Login from "./components/Admin/Login";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+
 import { setIsAdmin } from "./redux";
 
 import "./style.css";
-
+import AdminPanel from "./components/Admin/Admin";
 import NewPost from "./components/Admin/NewPost";
 
 const firebaseConfig = {
@@ -42,22 +43,26 @@ function Layout({ children }) {
 
 export default function App() {
   const [authChecked, setAuthChecked] = useState(false);
+
   const blog = useSelector((state) => state.post);
 
-  const fapp = initializeApp(firebaseConfig);
-  const storage = getStorage(fapp);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth();
+  const imgDB = getStorage(app);
+
   const dispatch = useDispatch();
   useEffect(() => {
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       dispatch(setIsAdmin(!!user));
       setAuthChecked(true); // Update the authentication state
     });
 
     return unsubscribe; // Clean up the listener when the component unmounts
-  }, []);
+  }, [dispatch]);
+
+  if (!authChecked) {
+    return <div>Loading authentication...</div>;
+  }
 
   function RequireAuth({ children }) {
     const isAdmin = useSelector((state) => state.isAdmin);
@@ -102,7 +107,7 @@ export default function App() {
             path="/admin/panel"
             element={
               <RequireAuth>
-                <Admin imgeDB={storage} />
+                <Admin />
               </RequireAuth>
             }
           />
@@ -110,7 +115,7 @@ export default function App() {
             path="/admin/blog/new"
             element={
               <RequireAuth>
-                <NewPost imgeDB={storage} />
+                <NewPost imgDB={imgDB} />
               </RequireAuth>
             }
           />

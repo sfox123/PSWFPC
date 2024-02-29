@@ -76,27 +76,44 @@ const NewPost = ({ imgDB }) => {
     event.preventDefault();
 
     try {
-      const formData = new FormData();
-      formData.append("id", "4");
-      formData.append("title", title);
-      formData.append("img", "imag");
-      formData.append("subtitle", subTitle);
-      formData.append("paragraph", paragraph);
+      const formData = {};
+      formData.id = v4();
+      formData.title = title;
+      formData.subtitle = subTitle;
+      formData.paragraph = paragraph;
+      formData.keyValuePairs = keyValuePairs;
+      formData.bulkImg = [];
 
-      // images.forEach((image, index) => {
-      //   formData.append(`image${index + 1}`, image);
-      // });
-
-      // bulkImages.forEach((image, index) => {
-      //   formData.append(`bulkImage${index + 1}`, image);
-      // });
-
-      keyValuePairs.forEach(({ key, value }, index) => {
-        formData.append(`keyValuePairs[${index}].key`, key);
-        formData.append(`keyValuePairs[${index}].value`, value);
+      const imageUploadPromises = images.map((image) => {
+        const imageRef = ref(imgDB, `images/${v4()}`);
+        return uploadBytes(imageRef, image).then((snapshot) => {
+          return getDownloadURL(snapshot.ref);
+        });
       });
 
-      const response = await axios.post(
+      const bulkImageUploadPromises = bulkImages.map((image) => {
+        const imageRef = ref(imgDB, `images/${v4()}`);
+        return uploadBytes(imageRef, image).then((snapshot) => {
+          return getDownloadURL(snapshot.ref);
+        });
+      });
+
+      const allImageUploadPromises = [
+        ...imageUploadPromises,
+        ...bulkImageUploadPromises,
+      ];
+
+      const imageUrls = await Promise.all(allImageUploadPromises);
+
+      imageUrls.forEach((url, index) => {
+        if (index < images.length) {
+          formData.img = url;
+        } else {
+          formData.bulkImg = [...formData.bulkImg, url];
+        }
+      });
+      console.log(formData);
+      await axios.post(
         "https://us-central1-pswfpc-a086d.cloudfunctions.net/addBlog",
         formData,
         {
@@ -105,25 +122,11 @@ const NewPost = ({ imgDB }) => {
           },
         }
       );
-
-      const imageUploadPromises = images.map((image) => {
-        const imageRef = ref(imgDB, `images/${v4()}`);
-        uploadBytes(imageRef, image).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((url) => {
-            console.log("Uploaded image URL:", url);
-          });
-        });
-      });
-
-      console.log("Blog post added successfully:", response.data);
-      console.log(imageUploadPromises);
-      // Redirect or show success message
     } catch (error) {
       console.error("Error adding blog post:", error);
       // Handle error, show error message
     }
   };
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <AdminHeader />
