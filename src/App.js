@@ -18,7 +18,7 @@ import { initializeApp } from "firebase/app";
 import { setIsAdmin } from "./redux";
 
 import "./style.css";
-import AdminPanel from "./components/Admin/Admin";
+
 import NewPost from "./components/Admin/NewPost";
 
 const firebaseConfig = {
