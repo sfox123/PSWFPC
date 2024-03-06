@@ -1,22 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import { v4 } from "uuid";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Link } from "react-router-dom";
 import ConfirmDelete from "./ConfirmDelete";
 
-const AdminPanel = ({ blogArray, isLoading }) => {
+const AdminPanel = ({ blogArray, isLoading, imgDB }) => {
   const [editingPostId, setEditingPostId] = useState(null);
   const handleEditClick = (postId) => {
     setEditingPostId(postId);
+    console.log(
+      "Editing Post:",
+      blogArray.find((post) => post.id === postId)
+    );
   };
 
   const handleCancel = () => {
     setEditingPostId(null);
   };
 
-  const handleSave = (post) => {
-    // TODO: Logic to update the blog post on the backend
-    console.log("Edited Post:", post);
-    setEditingPostId(null); // Reset to display mode
+  const handleSave = async (editedPost, images, bulkImages, removedImages) => {
+    try {
+      if (images.length > 0) {
+        const imageUploadPromises = images.map((image) => {
+          const imageRef = ref(imgDB, `images/${v4()}`);
+          return uploadBytes(imageRef, image).then((snapshot) => {
+            return getDownloadURL(snapshot.ref);
+          });
+        });
+
+        const imageUrls = await Promise.all(imageUploadPromises);
+        editedPost.img = imageUrls[0];
+      }
+
+      if (bulkImages.length > 0) {
+        const bulkImageUploadPromises = bulkImages.map((image) => {
+          const imageRef = ref(imgDB, `images/${v4()}`);
+          return uploadBytes(imageRef, image).then((snapshot) => {
+            return getDownloadURL(snapshot.ref);
+          });
+        });
+
+        const bulkImageUrls = await Promise.all(bulkImageUploadPromises);
+        editedPost.bulkImg = bulkImageUrls;
+      }
+
+      if (removedImages.length > 0) {
+        const removeImagesPromises = removedImages.map(async (image) => {
+          const imageRef = ref(imgDB, image);
+          await ref(imageRef).delete();
+        });
+
+        await Promise.all(removeImagesPromises);
+
+        editedPost.bulkImg = editedPost.bulkImg.filter(
+          (image) => !removedImages.includes(image)
+        );
+      }
+
+      console.log("Updated Post:", editedPost);
+
+      // TODO: Logic to update the blog post on the backend
+      console.log("Edited Post:", post);
+      setEditingPostId(null); // Reset to display mode
+
+      // try {
+      //   const response = await axios.put(
+      //     `http://your-api-url.com/posts/${post.id}`,
+      //     editedPost
+      //   );
+      //   console.log(response.data);
+      // } catch (error) {
+      //   console.error(error);
+      // }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -26,11 +85,12 @@ const AdminPanel = ({ blogArray, isLoading }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {isLoading && <p>Loading...</p>}
           {!isLoading &&
-            blogArray.map((post) => (
+            blogArray.map((post, i) => (
               <PostBox
                 key={post.id}
                 post={post}
                 isEditing={post.id === editingPostId}
+                id={i}
                 onEditClick={() => handleEditClick(post.id)}
                 onCancel={handleCancel}
                 onSave={handleSave}
@@ -45,16 +105,24 @@ const AdminPanel = ({ blogArray, isLoading }) => {
 
 const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
   const [images, setImages] = useState([]);
+  const [removedImages, setRemovedImages] = useState([]);
   const [bulkImages, setBulkImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [editedPost, setEditedPost] = useState({
     ...post,
-    image: post.image || {}, // For handling image updates
-    keyValue: post.keyValuePairs || [], // Initialize key-value pairs
   });
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-
+  const isEdited = () => {
+    return (
+      images.length > 0 ||
+      editedPost.title !== post.title ||
+      editedPost.subtitle !== post.subtitle ||
+      editedPost.keyValuePairs.length !== post.keyValuePairs.length ||
+      bulkImages.length > 0 ||
+      removedImages.length > 0
+    );
+  };
   const handleInputChange = (event, field) => {
     setEditedPost({ ...editedPost, [field]: event.target.value });
   };
@@ -95,21 +163,32 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
 
   const handleKeyValueChange = (index, event) => {
     const { name, value } = event.target;
-    const updatedPairs = [...editedPost.keyValue];
+    const updatedPairs = [...editedPost.keyValuePairs];
     updatedPairs[index][name] = value;
-    setEditedPost({ ...editedPost, keyValue: updatedPairs });
+    setEditedPost({ ...editedPost, keyValuePairs: updatedPairs });
   };
 
   const handleAddKeyValuePair = () => {
     setEditedPost({
       ...editedPost,
-      keyValue: [...editedPost.keyValue, ["newKey", "newValue"]],
+      keyValuePairs: [...editedPost.keyValuePairs, { key: "", value: "" }],
     });
   };
   const handleRemoveKeyValuePair = (index) => {
-    const updatedPairs = [...editedPost.keyValue];
+    const updatedPairs = [...editedPost.keyValuePairs];
     updatedPairs.splice(index, 1);
-    setEditedPost({ ...editedPost, keyValue: updatedPairs });
+    setEditedPost({ ...editedPost, keyValuePairs: updatedPairs });
+  };
+  const handleBulkImageRemoveExisting = (index) => {
+    const removedElement = editedPost.bulkImg[index];
+    setEditedPost({
+      ...editedPost,
+      bulkImg: editedPost.bulkImg.filter((_, i) => i !== index),
+    });
+    setRemovedImages((prevRemovedImages) => [
+      ...prevRemovedImages,
+      removedElement,
+    ]);
   };
   const handleBulkImageRemove = (index) => {
     setBulkImages((prevBulkImages) =>
@@ -181,7 +260,7 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
             </div>
           </div>
 
-          {editedPost.keyValue.map((pair, index) => (
+          {editedPost.keyValuePairs.map((pair, index) => (
             <div key={index} className="mt-4 flex space-x-4 mb-2">
               <input
                 type="text"
@@ -214,7 +293,6 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
             + Add Key-Value Pair
           </button>
           <br />
-          {/* Add more input fields for image, key-value pairs, etc. */}
           <label htmlFor="image" className="block text-gray-700 mb-1">
             Gallery Images
           </label>
@@ -230,38 +308,39 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
                   <button
                     type="button"
                     disabled={loading}
-                    onClick={() => handleImageRemove(index)}
+                    onClick={() => handleBulkImageRemoveExisting(index)}
                     className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
                   >
                     X
                   </button>
                 </div>
               ))}
-              {bulkImages.length > 0 && (
-                <div className="flex flex-wrap  space-x-2 space-y-2">
-                  {bulkImages.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={image.preview}
-                        alt=""
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                      <button
-                        type="button"
-                        disabled={loading}
-                        onClick={() => handleBulkImageRemove(index)}
-                        className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           ) : (
             <p>No images uploaded yet</p>
           )}
+          {bulkImages.length > 0 ? (
+            <div className="flex flex-wrap items-center space-x-2 space-y-2 mt-4">
+              {bulkImages.map((image, index) => (
+                <div key={index} className="relative">
+                  <img
+                    key={index}
+                    src={image.preview}
+                    alt=""
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => handleBulkImageRemove(index)}
+                    className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-full"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
           <div
             {...getBulkRootProps({
               className:
@@ -272,8 +351,13 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
             <p className="text-center">Upload Multiple Images</p>
           </div>
           <button
-            onClick={() => onSave(editedPost)}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            disabled={!isEdited()}
+            onClick={() =>
+              onSave(editedPost, images, bulkImages, removedImages)
+            }
+            className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${
+              !isEdited() ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             Save
           </button>

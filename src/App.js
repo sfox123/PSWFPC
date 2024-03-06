@@ -107,7 +107,7 @@ export default function App() {
             path="/admin/panel"
             element={
               <RequireAuth>
-                <Admin />
+                <Admin imgDB={imgDB} />
               </RequireAuth>
             }
           />
