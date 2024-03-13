@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { v4 } from "uuid";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db } from "../../api/firebase";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
 import { Link } from "react-router-dom";
+
 import ConfirmDelete from "./ConfirmDelete";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 const AdminPanel = ({ blogArray, isLoading, imgDB }) => {
   const [editingPostId, setEditingPostId] = useState(null);
+
   const handleEditClick = (postId) => {
     setEditingPostId(postId);
     console.log(
@@ -47,8 +56,14 @@ const AdminPanel = ({ blogArray, isLoading, imgDB }) => {
 
       if (removedImages.length > 0) {
         const removeImagesPromises = removedImages.map(async (image) => {
-          const imageRef = ref(imgDB, image);
-          await ref(imageRef).delete();
+          // Split the URL into parts
+          const urlParts = image.split("/");
+          // Extract the UUID from the URL
+          const id = urlParts[urlParts.length - 1].split("%2")[1].split("?")[0];
+          // Create a reference to the image in Firebase Storage
+          const imageRef = ref(imgDB, `images/${id}`);
+          // Delete the image
+          await deleteObject(imageRef);
         });
 
         await Promise.all(removeImagesPromises);
@@ -61,21 +76,18 @@ const AdminPanel = ({ blogArray, isLoading, imgDB }) => {
       console.log("Updated Post:", editedPost);
 
       // TODO: Logic to update the blog post on the backend
-      console.log("Edited Post:", post);
-      setEditingPostId(null); // Reset to display mode
+      // console.log("Edited Post:", post);
 
-      // try {
-      //   const response = await axios.put(
-      //     `http://your-api-url.com/posts/${post.id}`,
-      //     editedPost
-      //   );
-      //   console.log(response.data);
-      // } catch (error) {
-      //   console.error(error);
-      // }
+      try {
+        const val = doc(db, "blogs", editingPostId);
+        await updateDoc(val, editedPost);
+      } catch (error) {
+        console.error(error);
+      }
     } catch (error) {
       console.error(error);
     }
+    setEditingPostId(null); // Reset to display mode
   };
 
   return (
@@ -107,7 +119,7 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
   const [images, setImages] = useState([]);
   const [removedImages, setRemovedImages] = useState([]);
   const [bulkImages, setBulkImages] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const [editedPost, setEditedPost] = useState({
     ...post,
@@ -126,9 +138,10 @@ const PostBox = ({ post, isEditing, onEditClick, onCancel, onSave }) => {
   const handleInputChange = (event, field) => {
     setEditedPost({ ...editedPost, [field]: event.target.value });
   };
-  const onDeleteClick = (id) => {
+  const onDeleteClick = async (id) => {
     try {
-      console.log("Deleted 1", id);
+      const val = doc(db, "blogs", id);
+      await deleteDoc(val);
     } catch (error) {
       console.log("Error deleting post", error);
     } finally {

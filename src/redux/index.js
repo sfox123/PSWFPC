@@ -20,5 +20,6 @@ export {
   useGetPostsQuery,
   useAddPostMutation,
   useRemovePostMutation,
+  useEditPostMutation,
 } from "./api";
 export { addPost, removePost, setIsAdmin };

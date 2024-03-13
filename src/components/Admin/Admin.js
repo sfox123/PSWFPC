@@ -2,7 +2,7 @@ import AdminPanel from "./AdminPanel";
 import AdminHeader from "./AdminHeader";
 import { useGetPostsQuery } from "../../redux";
 
-const Admin = ({ imgDB }) => {
+const Admin = ({ imgDB, ref, db }) => {
   const { data: blogArray, isLoading: dataIsLoading } = useGetPostsQuery();
 
   return (
@@ -11,7 +11,8 @@ const Admin = ({ imgDB }) => {
       <main className="flex-grow p-8 container mx-auto">
         <AdminPanel
           imgDB={imgDB}
-          blogArray={blogArray}
+          ref={ref}
+          blogArray={db}
           isLoading={dataIsLoading}
         />
       </main>

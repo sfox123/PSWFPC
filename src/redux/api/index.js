@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-// https://us-central1-pswfpc-a086d.cloudfunctions.net/blog-update/
 
 export const postApi = createApi({
   reducerPath: "postApi",
@@ -17,6 +16,13 @@ export const postApi = createApi({
         body: newPost,
       }),
     }),
+    editPost: builder.mutation({
+      query: (id, newPost) => ({
+        url: `/edit-blog?id=${id}`,
+        method: "PUT",
+        body: newPost,
+      }),
+    }),
     removePost: builder.mutation({
       query: (id) => ({
         url: `/blog-delete/${id}`,
@@ -25,6 +31,10 @@ export const postApi = createApi({
     }),
   }),
 });
-export const { useGetPostsQuery, useAddPostMutation, useRemovePostMutation } =
-  postApi;
+export const {
+  useGetPostsQuery,
+  useAddPostMutation,
+  useRemovePostMutation,
+  useEditPostMutation,
+} = postApi;
 export default postApi;

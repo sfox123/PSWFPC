@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import axios from "axios";
+import { addDoc } from "firebase/firestore";
 import { v4 } from "uuid";
 
 import AdminHeader from "./AdminHeader";
 
-const NewPost = ({ imgDB }) => {
+const NewPost = ({ imgDB, db }) => {
   const [title, setTitle] = useState("");
   const [subTitle, setSubTitle] = useState("");
   const [paragraph, setParagraph] = useState("");
@@ -123,16 +123,8 @@ const NewPost = ({ imgDB }) => {
           formData.bulkImg = [...formData.bulkImg, url];
         }
       });
-      console.log(formData);
-      await axios.post(
-        "https://us-central1-pswfpc-a086d.cloudfunctions.net/addBlog",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+
+      await addDoc(db, formData);
       setLoading(false);
       resetFunc();
       setSuccessMessage("Blog post added successfully!");
