@@ -3,7 +3,38 @@ import m1 from "../../assets/m1.jpg";
 import m2 from "../../assets/m2.jpg";
 import m3 from "../../assets/m3.jpg";
 
+const ImageComponent = ({ src, alt, imgClass }) => (
+  <div className="relative w-[25%]">
+    <img
+      className={`w-full border shadow-2xl rounded-sm absolute transition-all duration-200 ${imgClass}`}
+      src={src}
+      alt={alt}
+    />
+  </div>
+);
+
 const About = () => {
+  const images = [
+    {
+      src: m1,
+      alt: "img_1",
+      imgClass:
+        "z-10 right-[-2rem] top-[2rem] hover:scale-105 hover:-translate-y-2 hover:z-20",
+    },
+    {
+      src: m2,
+      alt: "img_2",
+      imgClass:
+        "z-10 right-0 top-[-2rem] hover:scale-105 hover:-translate-y-2 hover:z-20",
+    },
+    {
+      src: m3,
+      alt: "img_3",
+      imgClass:
+        "z-4 left-[-2rem] top-[2rem] hover:scale-105 hover:-translate-y-2 hover:z-20",
+    },
+  ];
+
   return (
     <section className="flex justify-between sm:flex-col flex-col lg:flex-row md:flex-col p-2 m-5">
       <div className="flex flex-col md:w-[50%] w-fit">
@@ -19,29 +50,9 @@ const About = () => {
           ensure sustainable recovery and raise quality of living standard
         </p>
       </div>
-      <>
-        <div className="relative w-[25%]">
-          <img
-            className="w-full border shadow-2xl rounded-sm absolute z-10 transition-all duration-200 right-[-2rem] top-[2rem] hover:scale-105 hover:-translate-y-2 hover:z-20"
-            src={m1}
-            alt="img_1"
-          />
-        </div>
-        <div className="relative w-[25%]">
-          <img
-            className="w-full border shadow-2xl rounded-sm absolute z-10 transition-all duration-200 right-0 top-[-2rem] hover:scale-105 hover:-translate-y-2 hover:z-20"
-            src={m2}
-            alt="img_2"
-          />
-        </div>
-        <div className="relative w-[25%]">
-          <img
-            className="w-full border shadow-2xl rounded-sm absolute z-4 transition-all duration-200 left-[-2rem] top-[2rem] hover:scale-105 hover:-translate-y-2 hover:z-20"
-            src={m3}
-            alt="img_3"
-          />
-        </div>
-      </>
+      {images.map((image, index) => (
+        <ImageComponent key={index} {...image} />
+      ))}
     </section>
   );
 };
