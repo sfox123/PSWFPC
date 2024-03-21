@@ -7,6 +7,7 @@ import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import { useNavigate } from "react-router";
+import About from "./About/About";
 
 function BlogCard({ img, title, subtitle, id }) {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export default function Main({ blogs }) {
   return (
     <div>
       <Top />
+      <About />
       <Heading text="recent blogs" />
       <OwlCarousel
         className="owl-theme mt-4"
